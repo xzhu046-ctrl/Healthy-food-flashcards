@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Healthy Food Flash Cards</title>
+  <title>Healthy Food & Sleep Flash Cards</title>
   <style>
     * {
       box-sizing: border-box;
@@ -11,45 +11,67 @@
       padding: 0;
     }
 
+    html {
+      scroll-behavior: smooth;
+    }
+
     body {
       font-family: "Trebuchet MS", "Arial", sans-serif;
-      background: linear-gradient(180deg, #fffaf2 0%, #fef6ff 45%, #eef9ff 100%);
+      background:
+        radial-gradient(circle at top left, rgba(255, 211, 218, 0.45), transparent 28%),
+        radial-gradient(circle at top right, rgba(198, 235, 255, 0.4), transparent 25%),
+        linear-gradient(180deg, #fffaf2 0%, #fef6ff 45%, #eef9ff 100%);
       color: #2f2a2a;
       line-height: 1.6;
     }
 
     header {
       text-align: center;
-      padding: 2.5rem 1.2rem 1.5rem;
+      padding: 3rem 1.2rem 1.8rem;
     }
 
     header h1 {
-      font-size: clamp(2rem, 4vw, 3.2rem);
+      font-size: clamp(2.1rem, 4vw, 3.3rem);
       color: #ff6b81;
-      margin-bottom: 0.7rem;
+      margin-bottom: 0.8rem;
+      text-shadow: 0 3px 12px rgba(255, 107, 129, 0.15);
     }
 
     header p {
-      max-width: 860px;
+      max-width: 920px;
       margin: 0 auto;
       font-size: 1.08rem;
       color: #554b4b;
     }
 
-    .legend {
+    .legend,
+    .quick-nav {
       display: flex;
       gap: 1rem;
       justify-content: center;
       flex-wrap: wrap;
-      margin-top: 1.3rem;
+      margin-top: 1.2rem;
     }
 
-    .legend span {
-      padding: 0.65rem 1rem;
+    .legend span,
+    .quick-nav a {
+      padding: 0.7rem 1rem;
       border-radius: 999px;
       font-weight: bold;
       font-size: 0.95rem;
       box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+      text-decoration: none;
+    }
+
+    .quick-nav a {
+      background: #ffffffcc;
+      color: #5d5481;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .quick-nav a:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 22px rgba(0,0,0,0.12);
     }
 
     .good {
@@ -62,16 +84,32 @@
       color: #9a3131;
     }
 
+    .sleep {
+      background: #e8ebff;
+      color: #4b56a8;
+    }
+
     main {
-      max-width: 1250px;
+      max-width: 1280px;
       margin: 0 auto;
-      padding: 1rem 1.2rem 3rem;
+      padding: 1rem 1.2rem 3.5rem;
+    }
+
+    .section-block {
+      margin-top: 2.6rem;
     }
 
     .section-title {
       text-align: center;
-      margin: 2rem 0 1rem;
-      font-size: clamp(1.5rem, 3vw, 2.2rem);
+      margin: 0 0 1rem;
+      font-size: clamp(1.55rem, 3vw, 2.25rem);
+    }
+
+    .section-subtext {
+      max-width: 900px;
+      margin: 0 auto 1.2rem;
+      text-align: center;
+      color: #645858;
     }
 
     .choose-more {
@@ -80,6 +118,10 @@
 
     .eat-less {
       color: #d45757;
+    }
+
+    .sleep-title {
+      color: #5968cc;
     }
 
     .card-grid {
@@ -91,18 +133,20 @@
 
     .flashcard {
       perspective: 1200px;
-      min-height: 420px;
+      min-height: 430px;
+      cursor: pointer;
     }
 
     .flashcard-inner {
       position: relative;
       width: 100%;
       height: 100%;
-      min-height: 420px;
+      min-height: 430px;
       transition: transform 0.8s;
       transform-style: preserve-3d;
     }
 
+    .flashcard.flipped .flashcard-inner,
     .flashcard:hover .flashcard-inner,
     .flashcard:focus-within .flashcard-inner {
       transform: rotateY(180deg);
@@ -116,18 +160,18 @@
       border-radius: 24px;
       overflow: hidden;
       box-shadow: 0 14px 35px rgba(0,0,0,0.12);
-      border: 3px solid rgba(255,255,255,0.7);
+      border: 3px solid rgba(255,255,255,0.75);
       display: flex;
       flex-direction: column;
     }
 
     .front {
-      background: #ffffff;
+      background: rgba(255, 255, 255, 0.97);
     }
 
     .back {
       transform: rotateY(180deg);
-      padding: 1.2rem;
+      padding: 1.25rem;
       justify-content: center;
     }
 
@@ -148,7 +192,7 @@
 
     .tag {
       align-self: flex-start;
-      padding: 0.35rem 0.8rem;
+      padding: 0.38rem 0.85rem;
       border-radius: 999px;
       font-size: 0.82rem;
       font-weight: bold;
@@ -163,6 +207,11 @@
     .tag.less {
       background: #ffe5e5;
       color: #9a3131;
+    }
+
+    .tag.sleep {
+      background: #e8ebff;
+      color: #4b56a8;
     }
 
     .front h3 {
@@ -189,41 +238,67 @@
       background: linear-gradient(180deg, #fff3f3 0%, #ffe0e0 100%);
     }
 
+    .back.sleep {
+      background: linear-gradient(180deg, #f3f5ff 0%, #e3e9ff 100%);
+    }
+
     .back h3 {
       margin-bottom: 0.8rem;
-      font-size: 1.4rem;
+      font-size: 1.35rem;
+      color: #2c2c2c;
     }
 
     .back p {
-      margin-bottom: 0.75rem;
+      margin-bottom: 0.72rem;
       font-size: 0.98rem;
+    }
+
+    .back ul {
+      padding-left: 1.2rem;
+      margin-bottom: 0.8rem;
+    }
+
+    .back li {
+      margin-bottom: 0.35rem;
+      font-size: 0.96rem;
     }
 
     .back strong {
       color: #2c2c2c;
     }
 
-    .tips {
-      background: rgba(255,255,255,0.75);
+    .tips,
+    .family-note {
+      background: rgba(255,255,255,0.78);
       margin-top: 2.4rem;
-      padding: 1.5rem;
+      padding: 1.6rem;
       border-radius: 24px;
       box-shadow: 0 10px 24px rgba(0,0,0,0.08);
     }
 
-    .tips h2 {
+    .tips h2,
+    .family-note h2 {
       margin-bottom: 0.8rem;
-      color: #5e4fc0;
       text-align: center;
     }
 
-    .tips ul {
-      max-width: 900px;
+    .tips h2 {
+      color: #5e4fc0;
+    }
+
+    .family-note h2 {
+      color: #4e63c2;
+    }
+
+    .tips ul,
+    .family-note ul {
+      max-width: 920px;
       margin: 0 auto;
       padding-left: 1.4rem;
     }
 
-    .tips li {
+    .tips li,
+    .family-note li {
       margin-bottom: 0.6rem;
     }
 
@@ -237,184 +312,312 @@
     @media (max-width: 700px) {
       .flashcard,
       .flashcard-inner {
-        min-height: 460px;
+        min-height: 470px;
       }
 
       .front img {
         height: 200px;
+      }
+
+      .legend span,
+      .quick-nav a {
+        font-size: 0.9rem;
+      }
+
+      .flashcard:hover .flashcard-inner {
+        transform: none;
       }
     }
   </style>
 </head>
 <body>
   <header>
-    <h1>Healthy Food Flash Cards</h1>
+    <h1>Healthy Food & Sleep Flash Cards</h1>
     <p>
-      Explore foods to choose more often and foods to eat less often. Hover over each card to flip it and learn why these choices matter for children, adults, and elders.
+      Explore foods to choose more often, foods to eat less often, and simple information about sleep apnea.
+      Tap or hover over each card to flip it and learn why these health choices matter for children, adults, and elders.
     </p>
+
     <div class="legend">
       <span class="good">Choose More Often</span>
       <span class="less">Eat Less Often</span>
+      <span class="sleep">Sleep Health</span>
+    </div>
+
+    <div class="quick-nav">
+      <a href="#choose-more">Healthy Foods</a>
+      <a href="#eat-less">Foods to Limit</a>
+      <a href="#sleep-apnea">Sleep Apnea</a>
     </div>
   </header>
 
   <main>
-    <h2 class="section-title choose-more">Foods to Choose More Often</h2>
-    <section class="card-grid">
-      <article class="flashcard">
-        <div class="flashcard-inner">
-          <div class="flashcard-face front">
-            <img src="https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=900&q=80" alt="Fresh vegetables such as broccoli, carrots, cucumbers, spinach, and peppers" />
-            <div class="front-content">
-              <span class="tag good">Choose More Often</span>
+    <section class="section-block" id="choose-more">
+      <h2 class="section-title choose-more">Foods to Choose More Often</h2>
+      <p class="section-subtext">
+        These foods can support energy, digestion, heart health, and overall well-being when eaten regularly as part of a balanced diet.
+      </p>
+
+      <section class="card-grid">
+        <article class="flashcard" tabindex="0">
+          <div class="flashcard-inner">
+            <div class="flashcard-face front">
+              <img src="https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=900&q=80" alt="Fresh vegetables such as broccoli, carrots, cucumbers, spinach, and peppers" />
+              <div class="front-content">
+                <span class="tag good">Choose More Often</span>
+                <h3>Vegetables</h3>
+                <p>Examples: broccoli, carrots, spinach, cucumbers, peppers, and more.</p>
+                <p class="flip-note">Tap or hover to flip →</p>
+              </div>
+            </div>
+            <div class="flashcard-face back good">
               <h3>Vegetables</h3>
-              <p>Examples: broccoli, carrots, spinach, cucumbers, peppers, and more.</p>
-              <p class="flip-note">Flip for benefits →</p>
+              <p><strong>Why they are good:</strong> High in vitamins, minerals, and fibre. Canada’s food guidance recommends eating plenty of vegetables and fruits regularly.</p>
+              <p><strong>Long-term effects:</strong> Supports digestion, heart health, and overall disease prevention.</p>
             </div>
           </div>
-          <div class="flashcard-face back good">
-            <h3>Vegetables</h3>
-            <p><strong>Why they are good:</strong> High in vitamins, minerals, and fibre. Canada’s food guidance recommends eating plenty of vegetables and fruits regularly.</p>
-            <p><strong>Long-term effects:</strong> Supports digestion, heart health, and overall disease prevention.</p>
-          </div>
-        </div>
-      </article>
+        </article>
 
-      <article class="flashcard">
-        <div class="flashcard-inner">
-          <div class="flashcard-face front">
-            <img src="https://images.unsplash.com/photo-1619566636858-adf3ef46400b?auto=format&fit=crop&w=900&q=80" alt="Fresh fruits including apples, berries, bananas, and oranges" />
-            <div class="front-content">
-              <span class="tag good">Choose More Often</span>
+        <article class="flashcard" tabindex="0">
+          <div class="flashcard-inner">
+            <div class="flashcard-face front">
+              <img src="https://images.unsplash.com/photo-1619566636858-adf3ef46400b?auto=format&fit=crop&w=900&q=80" alt="Fresh fruits including apples, berries, bananas, and oranges" />
+              <div class="front-content">
+                <span class="tag good">Choose More Often</span>
+                <h3>Fruits</h3>
+                <p>Examples: apples, berries, bananas, oranges, and other fresh fruits.</p>
+                <p class="flip-note">Tap or hover to flip →</p>
+              </div>
+            </div>
+            <div class="flashcard-face back good">
               <h3>Fruits</h3>
-              <p>Examples: apples, berries, bananas, oranges, and other fresh fruits.</p>
-              <p class="flip-note">Flip for benefits →</p>
+              <p><strong>Why they are good:</strong> Provide fibre, vitamins, and a naturally sweet snack choice.</p>
+              <p><strong>Long-term effects:</strong> Can support heart health and lower the risk of chronic disease as part of a balanced diet.</p>
             </div>
           </div>
-          <div class="flashcard-face back good">
-            <h3>Fruits</h3>
-            <p><strong>Why they are good:</strong> Provide fibre, vitamins, and a naturally sweet snack choice.</p>
-            <p><strong>Long-term effects:</strong> Can support heart health and lower the risk of chronic disease as part of a balanced diet.</p>
-          </div>
-        </div>
-      </article>
+        </article>
 
-      <article class="flashcard">
-        <div class="flashcard-inner">
-          <div class="flashcard-face front">
-            <img src="https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=900&q=80" alt="Whole grains like oatmeal, brown rice, whole grain bread, and whole wheat pasta" />
-            <div class="front-content">
-              <span class="tag good">Choose More Often</span>
+        <article class="flashcard" tabindex="0">
+          <div class="flashcard-inner">
+            <div class="flashcard-face front">
+              <img src="https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=900&q=80" alt="Whole grains like oatmeal, brown rice, whole grain bread, and whole wheat pasta" />
+              <div class="front-content">
+                <span class="tag good">Choose More Often</span>
+                <h3>Whole Grains</h3>
+                <p>Examples: oatmeal, brown rice, whole grain bread, whole wheat pasta.</p>
+                <p class="flip-note">Tap or hover to flip →</p>
+              </div>
+            </div>
+            <div class="flashcard-face back good">
               <h3>Whole Grains</h3>
-              <p>Examples: oatmeal, brown rice, whole grain bread, whole wheat pasta.</p>
-              <p class="flip-note">Flip for benefits →</p>
+              <p><strong>Why they are good:</strong> Higher in fibre than refined grains, which helps with fullness and digestion.</p>
+              <p><strong>Long-term effects:</strong> May help with blood sugar control, cholesterol, and weight management.</p>
             </div>
           </div>
-          <div class="flashcard-face back good">
-            <h3>Whole Grains</h3>
-            <p><strong>Why they are good:</strong> Higher in fibre than refined grains, which helps with fullness and digestion.</p>
-            <p><strong>Long-term effects:</strong> May help with blood sugar control, cholesterol, and weight management.</p>
-          </div>
-        </div>
-      </article>
+        </article>
 
-      <article class="flashcard">
-        <div class="flashcard-inner">
-          <div class="flashcard-face front">
-            <img src="https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=900&q=80" alt="Protein-rich foods such as eggs, beans, lentils, fish, yogurt, tofu, nuts, and chicken" />
-            <div class="front-content">
-              <span class="tag good">Choose More Often</span>
+        <article class="flashcard" tabindex="0">
+          <div class="flashcard-inner">
+            <div class="flashcard-face front">
+              <img src="https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=900&q=80" alt="Protein-rich foods such as eggs, beans, lentils, fish, yogurt, tofu, nuts, and chicken" />
+              <div class="front-content">
+                <span class="tag good">Choose More Often</span>
+                <h3>Protein-Rich Foods</h3>
+                <p>Examples: beans, lentils, eggs, fish, chicken, tofu, yogurt, nuts.</p>
+                <p class="flip-note">Tap or hover to flip →</p>
+              </div>
+            </div>
+            <div class="flashcard-face back good">
               <h3>Protein-Rich Foods</h3>
-              <p>Examples: beans, lentils, eggs, fish, chicken, tofu, yogurt, nuts.</p>
-              <p class="flip-note">Flip for benefits →</p>
+              <p><strong>Why they are good:</strong> Canada’s food guide recommends choosing protein foods, especially plant-based options.</p>
+              <p><strong>Long-term effects:</strong> Helps maintain muscle and supports overall health when prepared in healthier ways.</p>
             </div>
           </div>
-          <div class="flashcard-face back good">
-            <h3>Protein-Rich Foods</h3>
-            <p><strong>Why they are good:</strong> Canada’s food guide recommends choosing protein foods, especially plant-based options.</p>
-            <p><strong>Long-term effects:</strong> Helps maintain muscle and supports overall health when prepared in healthier ways.</p>
-          </div>
-        </div>
-      </article>
+        </article>
+      </section>
     </section>
 
-    <h2 class="section-title eat-less">Foods to Eat Less Often</h2>
-    <section class="card-grid">
-      <article class="flashcard">
-        <div class="flashcard-inner">
-          <div class="flashcard-face front">
-            <img src="https://images.unsplash.com/photo-1629203851122-3726ecdf080e?auto=format&fit=crop&w=900&q=80" alt="Sugary drinks like soda, energy drinks, sweet juice, and bubble tea" />
-            <div class="front-content">
-              <span class="tag less">Eat Less Often</span>
+    <section class="section-block" id="eat-less">
+      <h2 class="section-title eat-less">Foods to Eat Less Often</h2>
+      <p class="section-subtext">
+        These foods and drinks can still be enjoyed sometimes, but having them too often may affect long-term health.
+      </p>
+
+      <section class="card-grid">
+        <article class="flashcard" tabindex="0">
+          <div class="flashcard-inner">
+            <div class="flashcard-face front">
+              <img src="https://images.unsplash.com/photo-1629203851122-3726ecdf080e?auto=format&fit=crop&w=900&q=80" alt="Sugary drinks like soda, energy drinks, sweet juice, and bubble tea" />
+              <div class="front-content">
+                <span class="tag less">Eat Less Often</span>
+                <h3>Sugary Drinks</h3>
+                <p>Examples: pop, energy drinks, sweetened juice, bubble tea.</p>
+                <p class="flip-note">Tap or hover to flip →</p>
+              </div>
+            </div>
+            <div class="flashcard-face back less">
               <h3>Sugary Drinks</h3>
-              <p>Examples: pop, energy drinks, sweetened juice, bubble tea.</p>
-              <p class="flip-note">Flip for reasons →</p>
+              <p><strong>Why they should be limited:</strong> These drinks are often high in sugar and low in nutrients.</p>
+              <p><strong>Long-term effects:</strong> May increase the risk of weight gain, type 2 diabetes, and dental problems.</p>
             </div>
           </div>
-          <div class="flashcard-face back less">
-            <h3>Sugary Drinks</h3>
-            <p><strong>Why they should be limited:</strong> These drinks are often high in sugar and low in nutrients.</p>
-            <p><strong>Long-term effects:</strong> May increase the risk of weight gain, type 2 diabetes, and dental problems.</p>
-          </div>
-        </div>
-      </article>
+        </article>
 
-      <article class="flashcard">
-        <div class="flashcard-inner">
-          <div class="flashcard-face front">
-            <img src="https://images.unsplash.com/photo-1585238342024-78d387f4a707?auto=format&fit=crop&w=900&q=80" alt="Processed snack foods like chips, candy, and instant noodles" />
-            <div class="front-content">
-              <span class="tag less">Eat Less Often</span>
+        <article class="flashcard" tabindex="0">
+          <div class="flashcard-inner">
+            <div class="flashcard-face front">
+              <img src="https://images.unsplash.com/photo-1585238342024-78d387f4a707?auto=format&fit=crop&w=900&q=80" alt="Processed snack foods like chips, candy, and instant noodles" />
+              <div class="front-content">
+                <span class="tag less">Eat Less Often</span>
+                <h3>Highly Processed Snack Foods</h3>
+                <p>Examples: chips, candy, instant noodles.</p>
+                <p class="flip-note">Tap or hover to flip →</p>
+              </div>
+            </div>
+            <div class="flashcard-face back less">
               <h3>Highly Processed Snack Foods</h3>
-              <p>Examples: chips, candy, instant noodles.</p>
-              <p class="flip-note">Flip for reasons →</p>
+              <p><strong>Why they should be limited:</strong> Often high in sodium, sugar, or saturated fat.</p>
+              <p><strong>Long-term effects:</strong> May contribute to high blood pressure and weight gain.</p>
             </div>
           </div>
-          <div class="flashcard-face back less">
-            <h3>Highly Processed Snack Foods</h3>
-            <p><strong>Why they should be limited:</strong> Often high in sodium, sugar, or saturated fat.</p>
-            <p><strong>Long-term effects:</strong> May contribute to high blood pressure and weight gain.</p>
-          </div>
-        </div>
-      </article>
+        </article>
 
-      <article class="flashcard">
-        <div class="flashcard-inner">
-          <div class="flashcard-face front">
-            <img src="https://images.unsplash.com/photo-1513639776629-7b61b0ac49cb?auto=format&fit=crop&w=900&q=80" alt="Deep fried foods such as fries, fried chicken, and fried fast food" />
-            <div class="front-content">
-              <span class="tag less">Eat Less Often</span>
+        <article class="flashcard" tabindex="0">
+          <div class="flashcard-inner">
+            <div class="flashcard-face front">
+              <img src="https://images.unsplash.com/photo-1513639776629-7b61b0ac49cb?auto=format&fit=crop&w=900&q=80" alt="Deep fried foods such as fries, fried chicken, and fried fast food" />
+              <div class="front-content">
+                <span class="tag less">Eat Less Often</span>
+                <h3>Deep Fried Foods</h3>
+                <p>Examples: fries, fried chicken, fried fast food.</p>
+                <p class="flip-note">Tap or hover to flip →</p>
+              </div>
+            </div>
+            <div class="flashcard-face back less">
               <h3>Deep Fried Foods</h3>
-              <p>Examples: fries, fried chicken, fried fast food.</p>
-              <p class="flip-note">Flip for reasons →</p>
+              <p><strong>Why they should be limited:</strong> Often high in calories and saturated fat.</p>
+              <p><strong>Long-term effects:</strong> May raise cholesterol and increase the risk of heart disease.</p>
             </div>
           </div>
-          <div class="flashcard-face back less">
-            <h3>Deep Fried Foods</h3>
-            <p><strong>Why they should be limited:</strong> Often high in calories and saturated fat.</p>
-            <p><strong>Long-term effects:</strong> May raise cholesterol and increase the risk of heart disease.</p>
-          </div>
-        </div>
-      </article>
+        </article>
 
-      <article class="flashcard">
-        <div class="flashcard-inner">
-          <div class="flashcard-face front">
-            <img src="https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=900&q=80" alt="Salty foods like processed meats, fast food, and salty snacks" />
-            <div class="front-content">
-              <span class="tag less">Eat Less Often</span>
+        <article class="flashcard" tabindex="0">
+          <div class="flashcard-inner">
+            <div class="flashcard-face front">
+              <img src="https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=900&q=80" alt="Salty foods like processed meats, fast food, and salty snacks" />
+              <div class="front-content">
+                <span class="tag less">Eat Less Often</span>
+                <h3>Foods High in Salt</h3>
+                <p>Examples: processed meats, fast food, salty snacks.</p>
+                <p class="flip-note">Tap or hover to flip →</p>
+              </div>
+            </div>
+            <div class="flashcard-face back less">
               <h3>Foods High in Salt</h3>
-              <p>Examples: processed meats, fast food, salty snacks.</p>
-              <p class="flip-note">Flip for reasons →</p>
+              <p><strong>Why they should be limited:</strong> Too much sodium can raise blood pressure.</p>
+              <p><strong>Long-term effects:</strong> May lead to hypertension, heart disease, and stroke.</p>
             </div>
           </div>
-          <div class="flashcard-face back less">
-            <h3>Foods High in Salt</h3>
-            <p><strong>Why they should be limited:</strong> Too much sodium can raise blood pressure.</p>
-            <p><strong>Long-term effects:</strong> May lead to hypertension, heart disease, and stroke.</p>
+        </article>
+      </section>
+    </section>
+
+    <section class="section-block" id="sleep-apnea">
+      <h2 class="section-title sleep-title">Sleep Apnea</h2>
+      <p class="section-subtext">
+        Sleep apnea is more than just snoring. It can affect sleep quality, daytime energy, and overall health if it is not addressed.
+      </p>
+
+      <section class="card-grid">
+        <article class="flashcard" tabindex="0">
+          <div class="flashcard-inner">
+            <div class="flashcard-face front">
+              <img src="https://images.unsplash.com/photo-1511295742362-92c96b1cf484?auto=format&fit=crop&w=900&q=80" alt="Person sleeping in bed at night" />
+              <div class="front-content">
+                <span class="tag sleep">Sleep Health</span>
+                <h3>What Is Sleep Apnea?</h3>
+                <p>A condition where breathing stops for short periods during sleep, sometimes many times in one night.</p>
+                <p class="flip-note">Tap or hover to flip →</p>
+              </div>
+            </div>
+            <div class="flashcard-face back sleep">
+              <h3>What Is Sleep Apnea?</h3>
+              <p><strong>What it is:</strong> Sleep apnea is a condition where breathing repeatedly pauses during sleep. This can stop the body from getting enough restful sleep.</p>
+              <p><strong>Why it matters:</strong> A person may sleep for many hours but still wake up feeling tired because their sleep keeps getting interrupted.</p>
+            </div>
           </div>
-        </div>
-      </article>
+        </article>
+
+        <article class="flashcard" tabindex="0">
+          <div class="flashcard-inner">
+            <div class="flashcard-face front">
+              <img src="https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=900&q=80" alt="Bedroom at night representing sleep signs and symptoms" />
+              <div class="front-content">
+                <span class="tag sleep">Sleep Health</span>
+                <h3>Common Signs</h3>
+                <p>Loud snoring, gasping, pauses in breathing, waking tired, morning headaches, and daytime sleepiness.</p>
+                <p class="flip-note">Tap or hover to flip →</p>
+              </div>
+            </div>
+            <div class="flashcard-face back sleep">
+              <h3>Common Signs</h3>
+              <ul>
+                <li>Loud and frequent snoring</li>
+                <li>Pauses in breathing during sleep</li>
+                <li>Gasping, choking, or snorting at night</li>
+                <li>Waking up often</li>
+                <li>Morning headaches</li>
+                <li>Dry mouth or sore throat after waking</li>
+                <li>Feeling very tired during the day</li>
+              </ul>
+            </div>
+          </div>
+        </article>
+
+        <article class="flashcard" tabindex="0">
+          <div class="flashcard-inner">
+            <div class="flashcard-face front">
+              <img src="https://images.unsplash.com/photo-1494173853739-c21f58b16055?auto=format&fit=crop&w=900&q=80" alt="Person feeling tired during the day" />
+              <div class="front-content">
+                <span class="tag sleep">Sleep Health</span>
+                <h3>Why It Matters</h3>
+                <p>Interrupted sleep can affect energy, mood, concentration, and overall health over time.</p>
+                <p class="flip-note">Tap or hover to flip →</p>
+              </div>
+            </div>
+            <div class="flashcard-face back sleep">
+              <h3>Why It Matters</h3>
+              <p><strong>Important to know:</strong> Sleep apnea is more than a sleeping habit. When breathing is interrupted many times overnight, the body may not get enough oxygen and rest.</p>
+              <p><strong>Possible effects:</strong> Low energy, poor focus, irritability, and increased risk of high blood pressure and heart problems.</p>
+            </div>
+          </div>
+        </article>
+
+        <article class="flashcard" tabindex="0">
+          <div class="flashcard-inner">
+            <div class="flashcard-face front">
+              <img src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&w=900&q=80" alt="Healthcare support and follow-up" />
+              <div class="front-content">
+                <span class="tag sleep">Sleep Health</span>
+                <h3>Helpful Next Steps</h3>
+                <p>Medical follow-up, noticing symptoms, and supporting treatment without blame or shame.</p>
+                <p class="flip-note">Tap or hover to flip →</p>
+              </div>
+            </div>
+            <div class="flashcard-face back sleep">
+              <h3>Helpful Next Steps</h3>
+              <ul>
+                <li>Speak with a healthcare provider</li>
+                <li>Ask whether a sleep assessment is needed</li>
+                <li>Keep track of signs the family notices at night</li>
+                <li>Support healthy sleep habits</li>
+                <li>Encourage follow-up if symptoms continue</li>
+                <li>Offer help in a respectful and non-judgmental way</li>
+              </ul>
+            </div>
+          </div>
+        </article>
+      </section>
     </section>
 
     <section class="tips">
@@ -427,10 +630,37 @@
         <li>Enjoy treats sometimes, but aim for balance most of the time.</li>
       </ul>
     </section>
+
+    <section class="family-note">
+      <h2>Family Health Message</h2>
+      <ul>
+        <li>Healthy changes do not need to happen all at once. Small steps can still make a big difference.</li>
+        <li>The goal is not to remove all favourite foods, but to build a better balance over time.</li>
+        <li>If the family notices loud snoring, gasping, or breathing pauses during sleep, it is important to bring this up with a healthcare provider.</li>
+        <li>Support works best when it feels respectful, encouraging, and free from blame.</li>
+      </ul>
+    </section>
   </main>
 
   <footer>
-    Made as a fun flash-card style healthy eating website for all ages.
+    Made as a fun flash-card style teaching website to support healthy eating and sleep health for the family.
   </footer>
+
+  <script>
+    const cards = document.querySelectorAll('.flashcard');
+
+    cards.forEach(card => {
+      card.addEventListener('click', () => {
+        card.classList.toggle('flipped');
+      });
+
+      card.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          card.classList.toggle('flipped');
+        }
+      });
+    });
+  </script>
 </body>
 </html>
